@@ -13,6 +13,9 @@ RUN set -euxo pipefail \
   ; chmod 775 /etc/unbound \
   ; /usr/sbin/unbound-anchor -a /etc/unbound/trusted-key.key || true
 
+RUN touch /var/log/unbound.log \
+  ; chown unbound:unbound /var/log/unbound.log
+
 COPY unbound.conf /
 COPY start.py /
 
