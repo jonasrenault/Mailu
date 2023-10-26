@@ -1,3 +1,31 @@
+This fork of Mailu modifies
+
+- the admin container to add a configuration option `WEB_SSO_PREFIX` which updates the url_path for `sso` and `static` routes served by the admin web app
+- the unbound container to add a forward rule to the host DNS
+- adds labels to push these modified images to github's package container
+
+Follow the [doc on mailu](https://mailu.io/2.0/contributors/environment.html#building-images) to build the docker images and push them to github's container registry:
+
+- Create a token on github with write access for containers and use this token to login to github's container registry.
+```console
+export CR_PAT=YOUR_TOKEN
+echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+```
+
+- Set the `DOCKER_ORG` and `MAILU_VERSION` env vars
+
+```console
+export DOCKER_ORG="ghcr.io/jonasrenault"
+export MAILU_VERSION="2.0.30"
+export MAILU_PINNED_VERSION="2.0.30"
+```
+
+- Build and push the docker images
+
+```console
+docker buildx bake -f tests/build.hcl --push admin unbound
+```
+
 <p align="leftr"><img src="docs/assets/logomark.png" alt="Mailu" height="200px"></p>
 
 
