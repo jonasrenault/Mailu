@@ -23,7 +23,7 @@ export MAILU_PINNED_VERSION="2.0.30"
 - Build and push the docker images
 
 ```console
-docker buildx bake -f tests/build.hcl --push admin unbound
+docker buildx bake -f tests/build.hcl --push admin resolver
 ```
 
 <p align="leftr"><img src="docs/assets/logomark.png" alt="Mailu" height="200px"></p>

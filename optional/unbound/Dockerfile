@@ -5,6 +5,7 @@ FROM base
 
 ARG VERSION=local
 LABEL version=$VERSION
+LABEL org.opencontainers.image.source=https://github.com/jonasrenault/Mailu
 
 RUN set -euxo pipefail \
   ; apk add --no-cache bind-tools unbound \
