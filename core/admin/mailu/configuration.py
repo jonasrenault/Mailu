@@ -66,6 +66,7 @@ DEFAULT_CONFIG = {
     'ADMIN': 'none',
     'WEB_ADMIN': '/admin',
     'WEB_WEBMAIL': '/webmail',
+    'WEB_SSO_PREFIX': os.getenv('WEB_SSO_PREFIX', ''),
     'WEBMAIL': 'none',
     'RECAPTCHA_PUBLIC_KEY': '',
     'RECAPTCHA_PRIVATE_KEY': '',
@@ -94,6 +95,7 @@ DEFAULT_CONFIG = {
     'SUBNET6': None,
 }
 
+
 class ConfigManager:
     """ Naive configuration manager that uses environment only
     """
@@ -117,7 +119,7 @@ class ConfigManager:
             return os.environ.get(key, value)
 
     def __coerce_value(self, value):
-        if isinstance(value, str) and value.lower() in ('true','yes'):
+        if isinstance(value, str) and value.lower() in ('true', 'yes'):
             return True
         elif isinstance(value, str) and value.lower() in ('false', 'no'):
             return False

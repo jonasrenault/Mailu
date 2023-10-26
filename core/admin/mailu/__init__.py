@@ -10,6 +10,7 @@ import logging
 
 import hmac
 
+
 class NoPingFilter(logging.Filter):
     def filter(self, record):
         if (record.args['{host}i'] == 'localhost' and record.args['r'] == 'GET /ping HTTP/1.1'):
@@ -17,6 +18,7 @@ class NoPingFilter(logging.Filter):
         if record.args['r'].endswith(' /internal/rspamd/local_domains HTTP/1.1'):
             return False
         return True
+
 
 class Logger(glogging.Logger):
     def setup(self, cfg):
@@ -26,10 +28,11 @@ class Logger(glogging.Logger):
         logger = logging.getLogger("gunicorn.access")
         logger.addFilter(NoPingFilter())
 
+
 def create_app_from_config(config):
     """ Create a new application based on the given configuration
     """
-    app = flask.Flask(__name__, static_folder='static', static_url_path='/static')
+    app = flask.Flask(__name__, static_folder='static', static_url_path=f'{configuration.DEFAULT_CONFIG["WEB_SSO_PREFIX"]}/static')
     app.cli.add_command(manage.mailu)
 
     # Bootstrap is used for error display and flash messages
@@ -75,9 +78,9 @@ def create_app_from_config(config):
     def inject_defaults():
         signup_domains = models.Domain.query.filter_by(signup_enabled=True).all()
         return dict(
-            signup_domains= signup_domains,
-            config        = app.config,
-            get_locale    = utils.get_locale,
+            signup_domains=signup_domains,
+            config=app.config,
+            get_locale=utils.get_locale,
         )
 
     # Jinja filters
@@ -97,7 +100,7 @@ def create_app_from_config(config):
     from mailu import ui, internal, sso, api
     app.register_blueprint(ui.ui, url_prefix=app.config['WEB_ADMIN'])
     app.register_blueprint(internal.internal, url_prefix='/internal')
-    app.register_blueprint(sso.sso, url_prefix='/sso')
+    app.register_blueprint(sso.sso, url_prefix=f"{app.config['WEB_SSO_PREFIX']}/sso")
     api.register(app, web_api_root=app.config.get('WEB_API'))
     return app
 
@@ -107,4 +110,3 @@ def create_app():
     """
     config = configuration.ConfigManager()
     return create_app_from_config(config)
-

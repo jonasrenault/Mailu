@@ -12,6 +12,7 @@ import ipaddress
 from urllib.parse import urlparse, urljoin
 from werkzeug.urls import url_unquote
 
+
 @sso.route('/login', methods=['GET', 'POST'])
 def login():
     if flask.request.headers.get(app.config['PROXY_AUTH_HEADER']) and not 'noproxyauth' in flask.request.url:
@@ -66,9 +67,11 @@ def login():
             return response
         else:
             utils.limiter.rate_limit_user(username, client_ip, device_cookie, device_cookie_username, form.pw.data) if models.User.get(username) else utils.limiter.rate_limit_ip(client_ip, username)
-            flask.current_app.logger.info(f'Login attempt for: {username}/sso/{flask.request.headers.get("X-Forwarded-Proto")} from: {client_ip}/{client_port}: failed: badauth: {utils.truncated_pw_hash(form.pw.data)}')
+            flask.current_app.logger.info(
+                f'Login attempt for: {username}/sso/{flask.request.headers.get("X-Forwarded-Proto")} from: {client_ip}/{client_port}: failed: badauth: {utils.truncated_pw_hash(form.pw.data)}')
             flask.flash(_('Wrong e-mail or password'), 'error')
     return flask.render_template('login.html', form=form, fields=fields)
+
 
 @sso.route('/pw_change', methods=['GET', 'POST'])
 @access.authenticated
@@ -102,7 +105,8 @@ def pw_change():
 
     return flask.render_template('pw_change.html', form=form)
 
-@sso.route('/logout', methods=['GET'])
+
+@sso.route('/logout', methods=['GET'], strict_slashes=False)
 @access.authenticated
 def logout():
     flask_login.logout_user()
@@ -112,10 +116,13 @@ def logout():
         response.set_cookie(cookie, 'empty', expires=0)
     return response
 
+
 """
 Redirect to the url passed in parameter if any; Ensure that this is not an open-redirect too...
 https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
 """
+
+
 def _has_usable_redirect(is_proxied=False):
     if 'homepage' in flask.request.url and not is_proxied:
         return None
@@ -126,9 +133,12 @@ def _has_usable_redirect(is_proxied=False):
             return target.geturl()
     return None
 
+
 """
 https://mailu.io/master/configuration.html#header-authentication-using-an-external-proxy
 """
+
+
 def _proxy():
     proxy_ip = flask.request.headers.get('X-Forwarded-By', flask.request.remote_addr)
     ip = ipaddress.ip_address(proxy_ip)
