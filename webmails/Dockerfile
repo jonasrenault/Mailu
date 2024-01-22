@@ -4,6 +4,7 @@ FROM base
 
 ARG VERSION
 LABEL version=$VERSION
+LABEL org.opencontainers.image.source=https://github.com/jonasrenault/Mailu
 
 COPY snappymail/pubkey.asc /tmp/snappymail.asc
 COPY roundcube/pubkey.asc /tmp/roundcube.asc

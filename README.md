@@ -2,6 +2,7 @@ This fork of Mailu modifies
 
 - the admin container to add a configuration option `WEB_SSO_PREFIX` which updates the url_path for `sso` and `static` routes served by the admin web app
 - the unbound container to add a forward rule to the host DNS
+- the webmail container to add custom snappymail configuration (enable plugins)
 - adds labels to push these modified images to github's package container
 
 Follow the [doc on mailu](https://mailu.io/2.0/contributors/environment.html#building-images) to build the docker images and push them to github's container registry:
