@@ -4,7 +4,7 @@ Using an external reverse proxy
 One of Mailu's use cases is as part of a larger services platform, where maybe
 other Web services are available on other FQDNs served from the same IP address.
 
-In such a configuration, one would usually run a frontend reverse proxy to serve all
+In such a configuration, one would usually run a front-end reverse proxy to serve all
 Web contents based on criteria like the requested hostname (virtual hosts).
 
 .. _traefik_proxy:
@@ -12,13 +12,14 @@ Web contents based on criteria like the requested hostname (virtual hosts).
 Traefik as reverse proxy
 ------------------------
 
-In your docker-compose.yml, add a section like follows:
+In your docker-compose.yml, remove the `ports` section of the `front` container
+and add a section like follows:
 
 .. code-block:: yaml
 
   reverse-proxy:
     # The official v2 Traefik docker image
-    image: traefik:v2.10
+    image: traefik:v2.11
     # Enables the web UI and tells Traefik to listen to docker
     command:
       - "--providers.docker=true"
@@ -34,10 +35,9 @@ In your docker-compose.yml, add a section like follows:
       - "--entrypoints.pop3.address=:pop3"
       - "--entrypoints.pop3s.address=:pop3s"
       - "--entrypoints.sieve.address=:sieve"
-        #  - "--api.insecure=true"
-      - "--log.level=DEBUG"
+      # - "--api.insecure=true"
+      # - "--log.level=DEBUG"
     ports:
-      # The HTTP port
       - "25:25"
       - "80:80"
       - "443:443"
@@ -49,7 +49,7 @@ In your docker-compose.yml, add a section like follows:
       - "143:143"
       - "4190:4190"
       # The Web UI (enabled by --api.insecure=true)
-      #- "8080:8080"
+      # - "8080:8080"
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
@@ -61,12 +61,12 @@ and then add the following to the front section:
   labels:
       - "traefik.enable=true"
 
-      # the second part is important to ensure Mailu can get certificates from letsencrypt
-      - "traefik.http.routers.web.rule=Host(`mail.example.com`) || Path(`/.well-known/acme-challenge/`)"
+      # the second part is important to ensure Mailu can get certificates from letsencrypt for all hostnames
+      - "traefik.http.routers.web.rule=Host(`mail.example.com`) || PathPrefix(`/.well-known/acme-challenge/`)"
       - "traefik.http.routers.web.entrypoints=web"
       - "traefik.http.services.web.loadbalancer.server.port=80"
 
-      #other FQDNS can be added here:
+      # other FQDNS can be added here:
       - "traefik.tcp.routers.websecure.rule=HostSNI(`mail.example.com`) || HostSNI(`autoconfig.example.com`) || HostSNI(`mta-sts.example.com`)"
       - "traefik.tcp.routers.websecure.entrypoints=websecure"
       - "traefik.tcp.routers.websecure.tls.passthrough=true"
@@ -134,4 +134,4 @@ in mailu.env:
   TLS_FLAVOR=mail-letsencrypt
   WEBROOT_REDIRECT=/sso/login
 
-Using the above configuration, Traefik will proxy all the traffic related to Mailu's FQDNs without requiring dupplicate certificates.
+Using the above configuration, Traefik will proxy all the traffic related to Mailu's FQDNs without requiring duplicate certificates.
