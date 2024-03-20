@@ -5,7 +5,7 @@ This fork of Mailu modifies
 - the webmail container to add custom snappymail configuration (enable plugins)
 - adds labels to push these modified images to github's package container
 
-** These modifications are in the `intellab-custom-containers` branch. First switch to this branch before building the images.**
+**These modifications are in the `intellab-custom-containers` branch. First switch to this branch before building the images.**
 
 Follow the [doc on mailu](https://mailu.io/2.0/contributors/environment.html#building-images) to build the docker images and push them to github's container registry:
 
