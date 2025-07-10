@@ -1,6 +1,6 @@
 # core/base
-libs/podop
-libs/socrate
+-e libs/podop
+-e libs/socrate
 
 # core/admin
 alembic
@@ -16,12 +16,13 @@ Flask-Login
 flask-marshmallow
 Flask-Migrate
 Flask-RESTX
-Flask-SQLAlchemy<3
+Flask-SQLAlchemy
 Flask-WTF
 gunicorn
 idna
 itsdangerous
 limits
+mariadb
 marshmallow
 marshmallow-sqlalchemy
 mysql-connector-python
@@ -45,6 +46,7 @@ watchdog
 
 # core/postfix
 postfix-mta-sts-resolver
+uvloop
 
 # core/oletools
 python-magic
@@ -55,4 +57,3 @@ requests
 
 # optional/radicale
 radicale
-

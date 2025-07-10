@@ -25,13 +25,14 @@ DEFAULT_CONFIG = {
     'DB_PW': None,
     'DB_HOST': 'database',
     'DB_NAME': 'mailu',
+    'DB_APPENDIX': '',
     'SQLITE_DATABASE_FILE': 'data/main.db',
     'SQLALCHEMY_DATABASE_URI': 'sqlite:////data/main.db',
     'SQLALCHEMY_DATABASE_URI_ROUNDCUBE': 'sqlite:////data/roundcube.db',
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     # Statistics management
     'INSTANCE_ID_PATH': '/data/instance',
-    'STATS_ENDPOINT': '20.{}.stats.mailu.io',
+    'STATS_ENDPOINT': '202406.{}.stats.mailu.io',
     # Common configuration variables
     'SECRET_KEY': 'changeMe',
     'DOMAIN': 'mailu.io',
@@ -84,10 +85,11 @@ DEFAULT_CONFIG = {
     'SESSION_TIMEOUT': 3600,
     'PERMANENT_SESSION_LIFETIME': 30*24*3600,
     'SESSION_COOKIE_SECURE': None,
-    'CREDENTIAL_ROUNDS': 12,
+    'CREDENTIAL_ROUNDS': 13,
     'TLS_PERMISSIVE': True,
     'TZ': 'Etc/UTC',
     'DEFAULT_SPAM_THRESHOLD': 80,
+    'PORTS': '25,80,443,465,993,995,4190',
     'PROXY_AUTH_WHITELIST': '',
     'PROXY_AUTH_HEADER': 'X-Auth-Email',
     'PROXY_AUTH_CREATE': False,
@@ -103,8 +105,8 @@ class ConfigManager:
 
     DB_TEMPLATES = {
         'sqlite': 'sqlite:////{SQLITE_DATABASE_FILE}',
-        'postgresql': 'postgresql://{DB_USER}:{DB_PW}@{DB_HOST}/{DB_NAME}',
-        'mysql': 'mysql+mysqlconnector://{DB_USER}:{DB_PW}@{DB_HOST}/{DB_NAME}',
+        'postgresql': 'postgresql://{DB_USER}:{DB_PW}@{DB_HOST}/{DB_NAME}{DB_APPENDIX}',
+        'mysql': 'mysql+mysqlconnector://{DB_USER}:{DB_PW}@{DB_HOST}/{DB_NAME}{DB_APPENDIX}',
     }
 
     def __init__(self):

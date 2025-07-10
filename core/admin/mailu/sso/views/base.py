@@ -9,8 +9,7 @@ import flask
 import flask_login
 import secrets
 import ipaddress
-from urllib.parse import urlparse, urljoin
-from werkzeug.urls import url_unquote
+from urllib.parse import urlparse, urljoin, unquote
 
 
 @sso.route('/login', methods=['GET', 'POST'])
@@ -127,8 +126,7 @@ def _has_usable_redirect(is_proxied=False):
     if 'homepage' in flask.request.url and not is_proxied:
         return None
     if url := flask.request.args.get('url'):
-        url = url_unquote(url)
-        target = urlparse(urljoin(flask.request.url, url))
+        target = urlparse(urljoin(flask.request.url, unquote(url)))
         if target.netloc == urlparse(flask.request.url).netloc:
             return target.geturl()
     return None
@@ -142,6 +140,7 @@ https://mailu.io/master/configuration.html#header-authentication-using-an-extern
 def _proxy():
     proxy_ip = flask.request.headers.get('X-Forwarded-By', flask.request.remote_addr)
     ip = ipaddress.ip_address(proxy_ip)
+    client_ip = flask.request.headers.get('X-Real-IP', flask.request.remote_addr)
     if not any(ip in cidr for cidr in app.config['PROXY_AUTH_WHITELIST']):
         flask.current_app.logger.error(f'Login failed by proxy - not on whitelist: from {client_ip} through {flask.request.remote_addr}.')
         return flask.abort(500, '%s is not on PROXY_AUTH_WHITELIST' % proxy_ip)

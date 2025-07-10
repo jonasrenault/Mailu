@@ -3,7 +3,7 @@
 # base system image (intermediate)
 # Note when updating the alpine tag, first manually run the workflow .github/workflows/mirror.yml.
 # Just run the workflow with the tag that must be synchronised.
-ARG DISTRO=ghcr.io/mailu/alpine:3.19.0
+ARG DISTRO=ghcr.io/mailu/alpine:3.21.0
 FROM $DISTRO as system
 
 ENV TZ=Etc/UTC LANG=C.UTF-8
@@ -15,7 +15,7 @@ RUN set -euxo pipefail \
   ; addgroup -Sg ${MAILU_GID} mailu \
   ; adduser -Sg ${MAILU_UID} -G mailu -h /app -g "mailu app" -s /bin/bash mailu \
   ; apk add --no-cache bash ca-certificates curl python3 tzdata \
-  ; ! [[ "$(uname -m)" == x86_64 ]] \
+  ; ! [[ "$(apk --print-arch)" == x86_64 ]] \
     || apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing hardened-malloc
 
 WORKDIR /app
@@ -27,7 +27,7 @@ CMD /bin/bash
 FROM system as build
 
 ARG MAILU_DEPS=prod
-ARG SNUFFLEUPAGUS_VERSION=0.10.0
+ARG SNUFFLEUPAGUS_VERSION=0.11.0
 
 ENV VIRTUAL_ENV=/app/venv
 
@@ -52,10 +52,10 @@ ENV \
   SNUFFLEUPAGUS_URL="https://github.com/jvoisin/snuffleupagus/archive/refs/tags/v${SNUFFLEUPAGUS_VERSION}.tar.gz"
 
 RUN set -euxo pipefail \
-  ;  machine="$(uname -m)" \
-  ; deps="build-base gcc libffi-dev python3-dev" \
+  ;  machine="$(apk --print-arch)" \
+  ; deps="build-base gcc libffi-dev python3-dev mariadb-dev" \
   ; [[ "${machine}" != x86_64 ]] && \
-      deps="${deps} cargo git libretls-dev mariadb-connector-c-dev postgresql-dev" \
+      deps="${deps} rust cargo git libretls-dev mariadb-connector-c-dev postgresql-dev" \
   ; apk add --virtual .build-deps ${deps} \
   ; [[ "${machine}" == armv7* ]] && \
       mkdir -p /root/.cargo/registry/index && \
@@ -66,8 +66,6 @@ RUN set -euxo pipefail \
   ; rm -rf src/tests/*php7*/ src/tests/*session*/ src/tests/broken_configuration/ src/tests/*cookie* src/tests/upload_validation/ \
   ; apk add --virtual .build-deps php83-dev php83-cgi php83-simplexml php83-xml pcre-dev build-base php83-pear php83-openssl re2c \
   ; pecl83 install vld-beta \
-  ; ln -s /usr/bin/phpize83 /usr/bin/phpize \
-  ; ln -s /usr/bin/php-config83 /usr/bin/php-config \
   ; make -j $(grep -c processor /proc/cpuinfo) release \
   ; cp src/.libs/snuffleupagus.so /app \
   ; rm -rf /root/.cargo /tmp/*.pem /root/.cache

@@ -93,6 +93,8 @@ The exception to this rule, are email messages with an extremely high spam score
 
 When the spam filter is enabled, received email messages will be moved to the logged in user's inbox folder or junk folder depending on the user defined spam filter tolerance.
 
+When `Enable marking spam mails as read` is enabled. Received messages moved to the Junk folder are marked as read. When this setting is disabled. Received messages moved to the Junk folder are not marked as read. They remain marked as unread.
+
 The user defined spam filter tolerance determines when an email is classified as ham (moved to the inbox folder) or spam (moved to the junk folder).
 The default value is 80%. The lower the spam filter tolerance, the more false positives (ham classified as spam). The higher the spam filter tolerance, the more false negatives (spam classified as ham).
 For more information see the :ref:`antispam documentation <antispam_howto>`.
@@ -164,6 +166,8 @@ You can add a fetched account by clicking on the `Add an account` button on the 
 Click the submit button to apply settings. With the default polling interval, fetchmail will start polling the email account after ``FETCHMAIL_DELAY``.
 Make sure ``FETCHMAIL_ENABLED`` is set to ``true`` in ``mailu.env`` to enable fetching and showing fetchmail in the admin interface.
 
+
+.. _AUTH tokens:
 
 Authentication tokens
 ---------------------

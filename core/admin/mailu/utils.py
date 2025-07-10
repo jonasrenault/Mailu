@@ -412,8 +412,8 @@ class MailuSessionInterface(SessionInterface):
         # save session and update cookie if necessary
         if session.save():
             response.set_cookie(
-               app.config['SESSION_COOKIE_NAME'],
-                session.sid,
+                app.config['SESSION_COOKIE_NAME'],
+                session.sid.decode('ascii'),
                 expires=datetime.now()+timedelta(seconds=app.config['PERMANENT_SESSION_LIFETIME']),
                 httponly=self.get_cookie_httponly(app),
                 domain=self.get_cookie_domain(app),
@@ -532,6 +532,7 @@ def isBadOrPwned(form):
 
 def formatCSVField(field):
     if not field.data:
+        field.data = ''
         return
     if isinstance(field.data,str):
         data = field.data.replace(" ","").split(",")
