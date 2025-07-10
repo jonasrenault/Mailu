@@ -21,7 +21,7 @@ sp.global_strict.enable();
 # sp.unserialize_hmac.enable();
 
 # Only allow execution of read-only files. This is a low-hanging fruit that you should enable.
-sp.readonly_exec.enable();
+# sp.readonly_exec.enable();
 
 # PHP has a lot of wrappers, most of them aren't usually useful, you should
 # only enable the ones you're using.
