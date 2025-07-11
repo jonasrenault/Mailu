@@ -2,12 +2,10 @@ This fork of Mailu modifies
 
 - the admin container to add a configuration option `WEB_SSO_PREFIX` which updates the url_path for `sso` and `static` routes served by the admin web app
 - the unbound container to add a forward rule to the host DNS
-- the webmail container to add custom snappymail configuration (enable plugins)
+- the webmail container to add custom snappymail configuration (enable plugins). **No longer used as we use roundcube webmail instead of snappymail.**
 - adds labels to push these modified images to github's package container
 
-**These modifications are in the `intellab-custom-containers` branch. First switch to this branch before building the images.**
-
-Follow the [doc on mailu](https://mailu.io/2.0/contributors/environment.html#building-images) to build the docker images and push them to github's container registry:
+Follow the [doc on mailu](https://mailu.io/2024.06/contributors/environment.html#building-images) to build the docker images and push them to github's container registry:
 
 - Create a token on github with write access for containers and use this token to login to github's container registry.
 ```console
@@ -19,8 +17,8 @@ echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 
 ```console
 export DOCKER_ORG="ghcr.io/jonasrenault"
-export MAILU_VERSION="2.0.30"
-export MAILU_PINNED_VERSION="2.0.30"
+export MAILU_VERSION="2024.06"
+export MAILU_PINNED_VERSION="2024.06"
 ```
 
 - Build and push the docker images
